@@ -8,19 +8,6 @@ class HTMLNode:
     def to_html(self):
         raise NotImplementedError
     
-    # def props_to_html(self):
-    #     print("inside props_to_html")
-    #     str = ""
-    #     ctr = 1
-    #     for prop in self.props:
-    #         # print(f"prop is {prop}") 
-    #         print(f"str is {str}") 
-    #         str = str + f'"{prop}": "{self.props[prop]}"'
-    #         if ctr < len(self.props):
-    #             str = str + ", "
-    #         ctr +=1
-    #     print(f"str is {str}")
-
     def props_to_html(self):
         # print("inside props_to_html")
         str = ""
@@ -47,8 +34,14 @@ class HTMLNode:
 
         if self.children == None:
             children1 = "None"
+        # elif type(self.children) == 
         else:
-            children1 = "'" + self.children + "'"
+            # print(f"type(self.children) is {type(self.children)}")
+            # print(f"type(self.children) == 'htmlnode.LeafNode' evaluates to {type(self.children) == 'htmlnode.LeafNode'}")
+            # print(f"type(self.children) == 'htmlnode.LeafNode' evaluates to {type(self.children) == LeafNode}")
+            # print(f"type(self.children) == list evaluates to {type(self.children) == list}")
+            # children1 = "'" + self.children + "'"
+            children1 = ""
 
         if self.props == None:
             props1 = "None"
@@ -86,4 +79,52 @@ class LeafNode(HTMLNode):
         str = str + open_tag + self.value + close_tag
         # print (f"about to return '{str}'")
         return str
+
+class ParentNode(HTMLNode):
+    result_str = ""
+    def __init__(self, tag, children, props=None):
+        super().__init__(tag, None, children, props)
+
+    def to_html(self):
+        # print("inside ParentNode.to_html()")
+        # print(f"children are {self.children}")
+        # print(f"type(self.children) is {type(self.children)}")
+        # print(f"type(self.children) == 'htmlnode.LeafNode' evaluates to {type(self.children) == LeafNode}")
+
+        #Need inner recursive loop. Need to set parent tag first, then recurse thru children.
+        #Current status is 'inner' text (all but outer tag) is working as expected.
+
+        #base case
+        if self.children == None:
+            return result_str
+        #recursive case
+        for child in self.children:
+            # print(f"type(child) is {type(child)}")
+            # print(f"type(child) == 'htmlnode.LeafNode' evaluates to {type(child) == LeafNode}")
+            if type(child) == LeafNode:
+                self.result_str = self.result_str + child.to_html()
+            elif type(child) == ParentNode:
+                return child.to_html() #Hope this is right
+        print(f"result_str is {self.result_str}")
+
+
+
+    # def to_html(self):
+    #     str = ""
+    #     if self.tag == None:
+    #         raise ValueError("All ParentNode objects require a tag.")
+
+    #     if self.children == None:
+    #         raise ValueError("All ParentNode objects require children.")
+
+    #     if self.tag is None:
+    #         open_tag = ""
+    #         close_tag = ""
+    #     else:
+    #         open_tag = "<" + self.tag + self.props_to_html() + ">"
+    #         close_tag = "</" + self.tag + ">"
+
+    #     str = str + open_tag + self.value + close_tag
+    #     # print (f"about to return '{str}'")
+    #     return str
 
