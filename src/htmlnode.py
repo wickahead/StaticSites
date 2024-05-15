@@ -80,51 +80,75 @@ class LeafNode(HTMLNode):
         # print (f"about to return '{str}'")
         return str
 
+
 class ParentNode(HTMLNode):
     result_str = ""
     def __init__(self, tag, children, props=None):
         super().__init__(tag, None, children, props)
 
-    def to_html(self):
-        # print("inside ParentNode.to_html()")
-        # print(f"children are {self.children}")
-        # print(f"type(self.children) is {type(self.children)}")
-        # print(f"type(self.children) == 'htmlnode.LeafNode' evaluates to {type(self.children) == LeafNode}")
+    # TODO - fix children rendering
+    def __repr__(self):
+        if self.tag == None:
+            tag1 = "None"
+        else:
+            tag1 = "'" + self.tag + "'"
 
-        #Need inner recursive loop. Need to set parent tag first, then recurse thru children.
-        #Current status is 'inner' text (all but outer tag) is working as expected.
+        if self.value == None:
+            value1 = "None"
+        else:
+            value1 = "'" + self.value + "'"
 
-        #base case
         if self.children == None:
-            return result_str
-        #recursive case
-        for child in self.children:
-            # print(f"type(child) is {type(child)}")
-            # print(f"type(child) == 'htmlnode.LeafNode' evaluates to {type(child) == LeafNode}")
-            if type(child) == LeafNode:
-                self.result_str = self.result_str + child.to_html()
-            elif type(child) == ParentNode:
-                return child.to_html() #Hope this is right
-        print(f"result_str is {self.result_str}")
+            children1 = "None"
+        # elif type(self.children) == 
+        else:
+            # print(f"type(self.children) is {type(self.children)}")
+            # print(f"type(self.children) == 'htmlnode.LeafNode' evaluates to {type(self.children) == 'htmlnode.LeafNode'}")
+            # print(f"type(self.children) == 'htmlnode.LeafNode' evaluates to {type(self.children) == LeafNode}")
+            # print(f"type(self.children) == list evaluates to {type(self.children) == list}")
+            # children1 = "'" + self.children + "'"
+            children1 = ""
+
+        if self.props == None:
+            props1 = "None"
+        else:
+            # props1 = "'" + self.props + "'"                    
+            props1 = "'{"
+            for prop in self.props:
+                print(f"prop is {prop}")
+                props1 = props1 + prop + ": " + self.props[prop] + ", "
+            props1 = props1 + "}'"
+
+        return_str = "HTMLNode(tag=" + tag1 + ", value=" + value1 + ", children=" + children1 + ", props=" + props1 + ")"
+        # print (return_str)
+        return return_str
 
 
+    #TODO - fix when children are ParentNode types (the result_str needs to be 'reset' for recursive parent nodes.)
+    def to_html(self):
 
-    # def to_html(self):
-    #     str = ""
-    #     if self.tag == None:
-    #         raise ValueError("All ParentNode objects require a tag.")
+        def __inner_to_html(self):
+            #base case
+            if self.children == None:
+                return self.result_str
+            #recursive case
+            for child in self.children:
+                # print(f"type(child) is {type(child)}")
+                # print(f"type(child) == 'htmlnode.LeafNode' evaluates to {type(child) == LeafNode}")
+                if type(child) == LeafNode:
+                    self.result_str = self.result_str + child.to_html()
+                elif type(child) == ParentNode:
+                    return child.to_html()
+            # print(f"result_str is {self.result_str}")
+            return self.result_str
 
-    #     if self.children == None:
-    #         raise ValueError("All ParentNode objects require children.")
-
-    #     if self.tag is None:
-    #         open_tag = ""
-    #         close_tag = ""
-    #     else:
-    #         open_tag = "<" + self.tag + self.props_to_html() + ">"
-    #         close_tag = "</" + self.tag + ">"
-
-    #     str = str + open_tag + self.value + close_tag
-    #     # print (f"about to return '{str}'")
-    #     return str
-
+        if self.tag is None:
+            raise ValueError("Tag cannot be empty.")
+        if self.children is None:
+            raise ValueError("ParentNode objects must have children.")
+        #create start tag
+        result_str = f"<{self.tag}>"
+        result_str = result_str + __inner_to_html(self)
+        result_str = result_str + f"</{self.tag}>"
+        # print(f"final result_str is {result_str}")
+        return result_str

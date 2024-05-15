@@ -1,7 +1,7 @@
 import unittest
 
 # from textnode import TextNode
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 #(self, tag=None, value=None, children=None, props=None):
 
@@ -32,7 +32,23 @@ class TestLeafNode(unittest.TestCase):
         leaf_node_raw = LeafNode(None,"Raw text here. Nothing extra to see.")
         self.assertEqual(leaf_node_raw.to_html(), "Raw text here. Nothing extra to see.")
 
-# class ParentNode
+class TestParentNode(unittest.TestCase):
+    def test_leaf_nodes(self):
+        parent_node_1 = ParentNode("p",[LeafNode("b", "Bold text"),LeafNode(None, "Normal text"),LeafNode("i", "italic text"),LeafNode(None, "Normal text"),]) 
+        self.assertEqual(parent_node_1.to_html(), '<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>')
+
+    def test_no_children(self):
+        parent_node_2 = ParentNode("p", None)
+        with self.assertRaises(ValueError) as cm:
+            parent_node_2.to_html()
+        self.assertEqual(str(cm.exception), "ParentNode objects must have children.")
+
+    def test_no_tag(self):
+        parent_node_3 = ParentNode(None,[LeafNode("b", "Bold text"),LeafNode(None, "Normal text"),LeafNode("i", "italic text"),LeafNode(None, "Normal text"),])
+        with self.assertRaises(ValueError) as cm:
+            parent_node_3.to_html()
+        self.assertEqual(str(cm.exception), "Tag cannot be empty.")
+
 
 if __name__ == "__main__":
     print("in 'dunder main'") #never see
