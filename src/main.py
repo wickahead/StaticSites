@@ -32,18 +32,18 @@ def main():
             LeafNode("i", "italic text"),
             LeafNode(None, "Normal text"),
     ],)
-    print(f"p_node is {p_node}")
-    print(f"p_node.to_html() is {p_node.to_html()}")
+    # print(f"p_node is {p_node}")
+    # print(f"p_node.to_html() is {p_node.to_html()}")
     
     p_node2 = ParentNode("p",
     [
-            LeafNode("b", "Bold text"),
-            LeafNode(None, "Normal text"),
+            LeafNode("b", "Bubba1"),
+            LeafNode(None, "Bubba2"),
             p_node,
-            LeafNode("i", "italic text"),
-            LeafNode(None, "Normal text"),
+            LeafNode("i", "Bubba3"),
+            LeafNode(None, "Bubba4"),
     ],)
-    print(f"p_node2 is {p_node2}")
+    # print(f"p_node2 is {p_node2}")
     print(f"p_node2.to_html() is {p_node2.to_html()}")
     
     pass
